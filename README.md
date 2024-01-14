@@ -1,4 +1,4 @@
-```markdown
+
 # Tello Drone Body Tracking & Control
 
 ## Overview
@@ -98,4 +98,3 @@ This project is licensed under the [MIT License](LICENSE).
 Feel free to contribute and make improvements! If you encounter any issues or have suggestions, please open an [issue](https://github.com/your-username/tello-drone-body-gesture/issues).
 
 Happy coding!
-```
