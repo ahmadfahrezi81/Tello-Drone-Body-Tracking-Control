@@ -16,7 +16,7 @@ This project allows you to control a Tello drone using body gestures. It utilize
 1. Clone the project:
 
     ```bash
-    git clone https://github.com/your-username/tello-drone-body-gesture.git
+    git clone https://github.com/ahmadfahrezi81/Tello-Drone-Body-Tracking-Control.git
     cd tello-drone-body-gesture
     ```
 
