@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/ahmadfahrezi/Code/computer_vision_with_tello_drone/venv_name"
+VIRTUAL_ENV="/Users/ahmadfahrezi/Code/tello-drone-body-gesture/venv_name"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

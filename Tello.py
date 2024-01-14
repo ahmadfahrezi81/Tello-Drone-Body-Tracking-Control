@@ -47,7 +47,7 @@ print("BATTERY PERCENTAGE: ", battery_percentage)
 tello.streamon()
 tello.takeoff()
 tello.move_up(80)
-time.sleep(40)   # Pauses the execution for 10 seconds
+# time.sleep(30)
 
 while True:    
     lr, fb, ud, rot = 0, 0, 0, 0
@@ -80,7 +80,11 @@ while True:
 
     tello.send_rc_control(lr, fb, ud, rot)
     cv2.imshow('window', img)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q'):
+        tello.land()
+        tello.streamoff()
+        tello.end()
         break
 # cap.release()
 cv2.destroyAllWindows()
