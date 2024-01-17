@@ -1,14 +1,30 @@
-import cv2, math, time
+import cv2, math, time, yagmail
 import mediapipe as mp
 from utils.PoseDetectorModule import PoseDetector
 from djitellopy import Tello
 
-# mpBody = mp.solutions.pose
-# body = mpBody.Pose()
-# mpDraw = mp.solutions.drawing_utils
-detector = PoseDetector(upBody=True)
+import os
+from dotenv import load_dotenv
 
-# cap = cv2.VideoCapture(0)
+# Load environment variables from the .env file
+load_dotenv()
+
+#input
+id_number = input("Enter your ID/Badge number: ")
+receiver_email = input("Enter your email address: ")
+receiver_name = input("Enter your name: ")
+
+# email setup
+body = f"SOS Detected. Here are the coordinates and image captured:\n\n"
+body += f"Receiver Name: {receiver_name}\n"
+body += f"ID/Badge Number: {id_number}\n"
+
+gmail_user = os.getenv('GMAIL_HOST')
+gmail_password = os.getenv("GMAIL_PASSWORD")
+
+coords = "43.6532 N, 79.3832 W" 
+
+detector = PoseDetector(upBody=True)
 
 def calAngle(lmList, p1, p2, p3, draw=True):
     if len(lmList) != 0:
@@ -63,20 +79,43 @@ while True:
         distR = calcDist(lmList, 12, 15)
         distL = calcDist(lmList, 11, 16)
 
-        if 80 < angleR < 110 and 80 < angleL < 110:
-            cv2.putText(img, 'T Pose', (50, 60), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 255), 2)
-            fb = 40
-        elif 165 < angleR < 185 and 165 < angleL < 185:
-            cv2.putText(img, 'Up', (50, 60), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 255), 2)
-            ud = 40
-        elif 110 < elbowR < 130 and 110 < elbowL < 130:
-            cv2.putText(img, 'Hippie', (50, 60), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 255), 2)
-            ud = -40
-        elif distR:
-            if distR < 80 and distL < 80:  
-                cv2.putText(img, 'Cross Arm', (50, 60), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 255), 2)
-                fb = -40
+        if 165 < angleR < 185 and not (165 < angleL < 185):
+            cv2.putText(img, 'SOS Detected - Right Hand Raised', (50, 60), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 255), 2)          
+            cv2.imwrite("sos_detected.jpg", img)
 
+            try:
+                yag = yagmail.SMTP(user=gmail_user, password=gmail_password)
+                yag.send(
+                    to=receiver_email,
+                    subject="SOS Detected - Image and Coordinates",
+                    contents= body + f" {coords}", 
+                    attachments="sos_detected.jpg",
+                )
+                print("Email sent successfully")
+            except:
+                print("Error, email was not sent")
+
+            fb = 40
+
+        elif not (165 < angleR < 185) and 165 < angleL < 185:
+
+            cv2.putText(img, 'SOS Detected - Left Hand Raised', (50, 60), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 255), 2)          
+            cv2.imwrite("sos_detected.jpg", img)
+
+            try:
+                yag = yagmail.SMTP(user=gmail_user, password=gmail_password)
+                yag.send(
+                    to=receiver_email,
+                    subject="SOS Detected - Image and Coordinates",
+                    contents= body + f" {coords}", 
+                    attachments="sos_detected.jpg",
+                )
+                print("Email sent successfully")
+            except:
+                print("Error, email was not sent")
+
+            fb = 40
+    
 
     tello.send_rc_control(lr, fb, ud, rot)
     cv2.imshow('window', img)

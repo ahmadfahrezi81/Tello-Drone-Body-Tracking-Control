@@ -52,6 +52,8 @@ This project allows you to control a Tello drone using body gestures. It utilize
     pip install python-dateutil==2.8.2
     pip install six==1.16.0
     pip install sounddevice==0.4.6
+    python pip install yagmail
+    python pip install python-dotenv
     ```
 
     This installs all the required packages for the project.
